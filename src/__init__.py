@@ -1,4 +1,5 @@
 # what __init__.py does is to make the code in the src folder a package
+
 from fastapi import FastAPI
 from src.books.routes import book_router
 version = "v1"
