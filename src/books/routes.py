@@ -1,12 +1,15 @@
-from fastapi import APIRouter, status
+from fastapi import APIRouter, status, Depends
 from fastapi.exceptions import HTTPException
 from typing import List
-
-from src.books.book_data import books
+from sqlmodel.ext.asyncio.session import AsyncSession
+from src.books.service import BookService
 from src.books.schemas import Book, BookUpdateModel
+from src.books.models import Book
+from src.db.main import get_session
+
 book_router = APIRouter()
 @book_router.get("/", response_model=List[Book])
-async def get_books():
+async def get_books(session: AsyncSession = Depends(get_session)):
     return books
 
 @book_router.post("/", status_code=status.HTTP_201_CREATED)
