@@ -10,3 +10,4 @@ Start by setting up a FastAPI project and running a simple web server. Then, pro
 - Postgresql by [NEON](https://neon.tech/docs/guides/python) COULD BD (Set your Postgresql db in cloud)
 - ORM managed by SQLAlchemy
 - Data validating managed by Pydantic
+- CRUD With SQLModel
