@@ -42,6 +42,8 @@ class BookService:
         # Update the book object with the new data
         for key, value in update_data_dict.items():
             setattr(book_to_update, key, value)
+        # Explicitly update updated_at
+        book_to_update.updated_at = datetime.now()
 
         await session.commit()
         await session.refresh(book_to_update)

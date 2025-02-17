@@ -4,7 +4,6 @@ from typing import List
 from sqlmodel.ext.asyncio.session import AsyncSession
 from src.books.service import BookService
 from src.books.schemas import Book, BookUpdateModel, BookCreateModel
-from src.books.models import Book
 from src.db.main import get_session
 
 book_router = APIRouter()
@@ -26,7 +25,7 @@ async def create_a_book(book_data: BookCreateModel, session: AsyncSession = Depe
     return new_book
 
 
-@book_router.get("/{book_uid}")
+@book_router.get("/{book_uid}", response_model=Book)
 async def get_book(book_uid: str, session: AsyncSession = Depends(get_session)) -> dict:
     book = await book_service.get_book(book_uid, session)
     if book:
