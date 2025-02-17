@@ -49,17 +49,18 @@ class BookService:
         await session.refresh(book_to_update)
 
         # DEBUG: Convert the SQLAlchemy model to a dictionary before returning
-        # return book_to_update
-        return {
-            "uid": str(book_to_update.uid),
-            "title": book_to_update.title,
-            "author": book_to_update.author,
-            "publisher": book_to_update.publisher,
-            "page_count": book_to_update.page_count,
-            "language": book_to_update.language,
-            "created_at": book_to_update.created_at,
-            "updated_at": book_to_update.updated_at
-        }
+        return book_to_update
+        # if i didnt wrote down the response model = Book in the routes.py PATCH method, i would have to return the dictionary like this:
+        # return {
+        #     "uid": str(book_to_update.uid),
+        #     "title": book_to_update.title,
+        #     "author": book_to_update.author,
+        #     "publisher": book_to_update.publisher,
+        #     "page_count": book_to_update.page_count,
+        #     "language": book_to_update.language,
+        #     "created_at": book_to_update.created_at,
+        #     "updated_at": book_to_update.updated_at
+        # }
   
   async def delete_book(self, book_uid: str, session: AsyncSession):
     book_to_delete = await self.get_book(book_uid, session)
