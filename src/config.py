@@ -28,3 +28,5 @@ async def connect_to_neon():
         print('PostgreSQL version:', version)
     except Exception as e:
         print("Error connecting to PostgreSQL:", e)
+
+Config = settings
