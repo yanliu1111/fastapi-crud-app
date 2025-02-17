@@ -1,9 +1,9 @@
 from sqlmodel import create_engine, text, SQLModel, Field, Column
 from sqlalchemy.ext.asyncio import create_async_engine
 from sqlmodel.ext.asyncio.session import AsyncSession
-from sqlalchemy import sessionmaker
+from sqlalchemy.orm import sessionmaker
 from src.config import Config
-
+from typing import AsyncGenerator
 # Remove sslmode from DATABASE_URL
 database_url = Config.DATABASE_URL.replace("postgresql://", "postgresql+asyncpg://").split("?")[0]
 
@@ -22,9 +22,9 @@ async def init_db():
         await conn.run_sync(SQLModel.metadata.create_all)
 
 # if you want to set service.py as an dependency injection, you can do session: AsyncSession = Depends(get_session)
-async def get_session() -> AsyncSession:
+async def get_session() -> AsyncGenerator[AsyncSession, None]:
     Session = sessionmaker(
-        bind= async_engine,
+        bind= engine,
         class_=AsyncSession,
         expire_on_commit=False
     )
