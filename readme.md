@@ -11,3 +11,4 @@ Start by setting up a FastAPI project and running a simple web server. Then, pro
 - ORM managed by SQLAlchemy
 - Data validating managed by Pydantic
 - CRUD With SQLModel
+- alembic for migrations, offers good template for using async DB API
