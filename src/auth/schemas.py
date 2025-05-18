@@ -5,7 +5,7 @@ from typing import List
 from pydantic import BaseModel, Field
 
 from src.books.schemas import Book
-from src.reviews.schemas import ReviewModel
+# from src.reviews.schemas import ReviewModel
 
 
 class UserCreateModel(BaseModel):
@@ -14,7 +14,7 @@ class UserCreateModel(BaseModel):
     username: str = Field(max_length=8)
     email: str = Field(max_length=40)
     password: str = Field(min_length=6)
-
+    is_active: bool = Field(default=True)
     model_config = {
         "json_schema_extra": {
             "example": {
@@ -34,15 +34,16 @@ class UserModel(BaseModel):
     email: str
     first_name: str
     last_name: str
+    is_active: bool
     is_verified: bool
     password_hash: str = Field(exclude=True)
     created_at: datetime
-    update_at: datetime
+    updated_at: datetime
 
 
-class UserBooksModel(UserModel):
-    books: List[Book]
-    reviews: List[ReviewModel]
+# class UserBooksModel(UserModel):
+#     books: List[Book]
+#     reviews: List[ReviewModel]
 
 
 class UserLoginModel(BaseModel):
