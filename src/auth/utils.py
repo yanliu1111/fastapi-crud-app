@@ -1,5 +1,5 @@
 from passlib.context import CryptContext
-from datetime import timedelta, datetime
+from datetime import timedelta, datetime, timezone
 from src.config import Config
 import jwt
 import uuid
@@ -14,30 +14,45 @@ def generate_password_hash(password: str) -> str:
 def verify_password(password:str, hash:str) -> bool:
     return passwd_context.verify(password, hash)
 
-def create_access_token(user_data:dict, expiry:timedelta = None, refresh:bool = False):
+def create_access_token(user_data: dict, expiry: timedelta = None, refresh: bool = False):
     payload = {
-        
+        "user": user_data,
+        "exp": int((datetime.now(timezone.utc) + (expiry if expiry else timedelta(seconds=ACCESS_TOKEN_EXPIRE))).timestamp()),
+        "jti": str(uuid.uuid4()),
+        "refresh": refresh,
     }
-
-    payload['user'] = user_data
-    payload['exp'] = datetime.now() + (expiry if expiry is not None else timedelta(seconds=ACCESS_TOKEN_EXPIRE))
-    payload['jti'] = str(uuid.uuid4())
-    payload['refresh'] = refresh
+    print(f"Payload: {payload}", flush=True)
     token = jwt.encode(
         payload=payload,
         key=Config.JWT_SECRET,
         algorithm=Config.JWT_ALGORITHM,
     )
+    print(f"Generated Token: {token}", flush=True)
+    print(f"Token Expiry (exp): {payload['exp']} (Unix Timestamp)", flush=True)
+    print(f"Current UTC Time: {int(datetime.now(timezone.utc).timestamp())} (Unix Timestamp)", flush=True)
     return token
-
-def decode_token(token:str) -> dict:
+def decode_token(token: str) -> dict:
     try:
         token_data = jwt.decode(
-            jwt = token,
-            key=Config.JWT_SECRET,
-            algorithms=[Config.JWT_ALGORITHM],
+            jwt=token, key=Config.JWT_SECRET, algorithms=[Config.JWT_ALGORITHM]
         )
+        logging.info(f"Token Expiry (exp): {token_data['exp']} (Unix Timestamp)")
+        logging.info(f"Current UTC Time: {int(datetime.now(timezone.utc).timestamp())} (Unix Timestamp)")
         return token_data
+
     except jwt.PyJWTError as e:
-        logging.error(f"JWT Error: {e}")
+        logging.exception(e)
         return None
+
+
+# def decode_token(token:str) -> dict:
+#     try:
+#         token_data = jwt.decode(
+#             jwt = token,
+#             key=Config.JWT_SECRET,
+#             algorithms=[Config.JWT_ALGORITHM],
+#         )
+#         return token_data
+#     except jwt.PyJWTError as e:
+#         logging.error(f"JWT Error: {e}")
+#         return None

@@ -29,6 +29,7 @@ async def create_user_account(
             detail="User already exists",
         )
     new_user = await user_service.create_user(user_data, session)
+    
     return new_user
 
 @auth_router.post('/login')
