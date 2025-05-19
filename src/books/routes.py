@@ -5,19 +5,27 @@ from sqlmodel.ext.asyncio.session import AsyncSession
 from src.books.service import BookService
 from src.books.schemas import Book, BookUpdateModel, BookCreateModel
 from src.db.main import get_session
+from src.auth.dependencies import AccessTokenBearer
+import time
 
 book_router = APIRouter()
 book_service = BookService()
+access_token_bearer = AccessTokenBearer()
 
 @book_router.get("/", response_model=List[Book])
-async def get_books(session: AsyncSession = Depends(get_session)):
+async def get_books(session: AsyncSession = Depends(get_session),
+                    user_details: str = Depends(access_token_bearer)):
     books = await book_service.get_books(session)
     return books
 
-import time
+# @book_router.get(
+#     "/user/{user_uid}", response_model=List[Book], dependencies=[role_checker]
+# )
 
 @book_router.post("/", status_code=status.HTTP_201_CREATED, response_model=Book)
-async def create_a_book(book_data: BookCreateModel, session: AsyncSession = Depends(get_session)) -> dict:
+async def create_a_book(book_data: BookCreateModel, 
+                        session: AsyncSession = Depends(get_session), 
+                        ) -> dict:
     print("Reached create_a_book endpoint")
     new_book = await book_service.create_book(book_data, session)
     print(f"new_book: {repr(new_book)}")
