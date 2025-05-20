@@ -15,6 +15,7 @@ access_token_bearer = AccessTokenBearer()
 @book_router.get("/", response_model=List[Book])
 async def get_books(session: AsyncSession = Depends(get_session),
                     user_details: str = Depends(access_token_bearer)):
+    print("user_details: ", user_details)
     books = await book_service.get_books(session)
     return books
 
@@ -27,7 +28,6 @@ async def create_a_book(book_data: BookCreateModel,
                         session: AsyncSession = Depends(get_session), 
                         user_details: str = Depends(access_token_bearer)
                         ) -> dict:
-    print("Reached create_a_book endpoint")
     new_book = await book_service.create_book(book_data, session)
     print(f"new_book: {repr(new_book)}")
     time.sleep(1)  # Introduce a short delay to ensure print gets executed
