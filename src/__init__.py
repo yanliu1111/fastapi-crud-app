@@ -8,6 +8,7 @@ from src.auth.routers import auth_router
 @asynccontextmanager
 async def life_span(app: FastAPI):
     print (f"Starting the app...")
+    from src.db.main import Book
     await init_db()
     yield
     print (f"App hasbeen stopped")

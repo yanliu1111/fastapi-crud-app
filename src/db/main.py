@@ -18,7 +18,7 @@ async def init_db():
         # statement = text("SELECT 'Hello, World!';")
         # result = await conn.execute(statement)
         # print(result.all())
-        from src.books.models import Book
+        # from src.db.models import Book
         await conn.run_sync(SQLModel.metadata.create_all)
 
 # if you want to set service.py as an dependency injection, you can do session: AsyncSession = Depends(get_session)
