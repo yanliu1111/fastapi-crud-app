@@ -11,9 +11,10 @@ from .dependencies import RefreshTokenBearer, AccessTokenBearer, get_current_use
 from src.db.redis import add_jti_to_blocklist
 
 
-
 auth_router = APIRouter()
 user_service = UserService()
+role_checker = RoleChecker('admin', 'user')
+
 REFRESH_TOKEN_EXPIRE = 2
 @auth_router.post(
         "/signup",
@@ -86,7 +87,7 @@ async def get_new_access_token(token_details: dict = Depends(RefreshTokenBearer(
     )
 
 @auth_router.get('/me')
-async def get_current_user(user = Depends(get_current_user)):
+async def get_current_user(user = Depends(get_current_user), _:bool = Depends(role_checker)):
     return user
 
 @auth_router.get('/logout')
