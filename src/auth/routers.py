@@ -13,7 +13,7 @@ from src.db.redis import add_jti_to_blocklist
 
 auth_router = APIRouter()
 user_service = UserService()
-role_checker = RoleChecker('admin', 'user')
+role_checker = RoleChecker(['admin', 'user'])
 
 REFRESH_TOKEN_EXPIRE = 2
 @auth_router.post(

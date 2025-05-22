@@ -16,7 +16,8 @@ class BookService:
     return book if book is not None else None
   
   async def create_book(
-        self, book_data: BookCreateModel, session: AsyncSession
+        self, book_data: BookCreateModel, 
+        user_id: str, session: AsyncSession
     ):
      # create a dictionary of the book data
     book_data_dict = book_data.model_dump()
@@ -26,11 +27,12 @@ class BookService:
     # new_book.published_date = datetime.strptime(
     #             book_data_dict["published_date"], "%Y-%m-%d"
     #         )
-    new_book.published_date = book_data.published_date
+    new_book.published_date = book_data_dict["published_date"]
+    new_book.user_uid = user_id
 
     session.add(new_book)
     await session.commit()  # commit the transaction
-    await session.refresh(new_book)
+
     return new_book
 
   async def update_book(self, book_uid: str, update_data: BookUpdateModel, session: AsyncSession):
