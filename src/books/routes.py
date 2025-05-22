@@ -22,6 +22,17 @@ async def get_books(session: AsyncSession = Depends(get_session),
     books = await book_service.get_books(session)
     return books
 
+@book_router.get("/user/{user_id}", response_model=List[Book], dependencies=[role_checker])   
+async def get_user_books_submission(
+    user_id: str,  # Match the path parameter name
+    session: AsyncSession = Depends(get_session),
+    token_details: dict = Depends(access_token_bearer),
+) -> dict:
+    print("token_details", token_details)
+    print(f"user_id: {user_id}")
+    books = await book_service.get_user_books(user_id, session)  # Use user_id here
+    return books
+
 # @book_router.get(
 #     "/user/{user_uid}", response_model=List[Book], dependencies=[role_checker]
 # )
