@@ -15,7 +15,8 @@ Start by setting up a FastAPI project and running a simple web server. Then, pro
 - passlib for password hashing
 - pydantic for data validation and settings management
 - pyjwt for JWT token management
-  
+- Connect cloud Redis with FastAPI, set up Redis in cloud
+- 
 ### Project setup
 1. Clone the project repository:
 ```bash
@@ -51,10 +52,40 @@ alembic upgrade head
 ```bash
 fastapi dev src/
 ```
-
 8. 👉JWT token generation:
 ```bash
 python
 import secrets
 secrets.token_hex(16)
 ```
+9. Redis connection:
+```js
+// in config.py
+import os
+class Settings(BaseSettings):
+    model_config = SettingsConfigDict(env_file=".env", extra="ignore")
+    DATABASE_URL: str
+    JWT_SECRET: str
+    JWT_ALGORITHM: str
+    REDIS_HOST: str = os.getenv("REDIS_HOST", "localhost")
+    REDIS_PORT: int = int(os.getenv("REDIS_PORT", 6379))
+    REDIS_PASSWORD: str = os.getenv("REDIS_PASSWORD", "")
+```
+
+10. Role-Based Access Control  
+    Admin <br>
+    [
+        "adding User",
+        "change roles",
+        ”crud on users",
+        "book submission",
+        "crud on books",
+        "crud on reviews",
+        "revoke access",
+    ]<br>
+    User<br>
+    [
+        "crud on their own books submission",
+        "crud on their own reviews",
+        "crud on their own account",
+    ]
