@@ -27,7 +27,6 @@ class UserCreateModel(BaseModel):
         }
     }
 
-
 class UserModel(BaseModel):
     uid: uuid.UUID
     username: str
