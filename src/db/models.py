@@ -28,6 +28,28 @@ class User(SQLModel, table=True):
     
     def __repr__(self):
         return f"<User {self.username}>"
+    
+class BookTage(SQLModel, table=True):
+    book_id: uuid.UUID = Field(default=None, foreign_key="books.uid", primary_key=True)
+    tag_id: uuid.UUID = Field(default=None, foreign_key="tags.uid", primary_key=True)
+
+class Tag (SQLModel, table=True):
+    __tablename__ = "tags"
+    uid: uuid.UUID = Field(sa_column=Column(
+        pg.UUID,
+        nullable=False,
+        primary_key=True,
+        default=uuid.uuid4
+    ))
+    name: str = Field(sa_column=Column(pg.VARCHAR(50), nullable=False, unique=True))
+    created_at: datetime = Field(sa_column = Column(pg.TIMESTAMP, default=datetime.now))
+    books: List['Book'] = Relationship(
+        back_populates="tags",
+        bool_populates="tags",
+        sa_relationship_kwargs={'lazy': 'selectin'},
+    )
+    def __repr__(self) -> str:
+        return f"<Tag {self.name}>"
 
 class Book(SQLModel, table=True):
     __tablename__ = "books"
