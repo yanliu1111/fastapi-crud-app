@@ -4,6 +4,56 @@
 
 Start by setting up a FastAPI project and running a simple web server. Then, progress to more advanced topics, including building REST APIs, handling path and query parameters, and working with databases using SQLModel. Additionally, explore managing settings with Pydantic, organizing your API with routers, and implementing asynchronous SQLModel connections.
 
+### Flowchart of the application
+```mermaid
+erDiagram
+    users {
+        UUID uid PK
+        varchar username
+        varchar email
+        varchar first_name
+        varchar last_name
+        varchar role
+        Boolean is_verified
+        varchar password_hash
+        Timestamp created_at
+        Timestamp update_at
+    }
+
+    books {
+        UUID uid PK
+        varchar title
+        varchar author
+        varchar publisher
+        Date published_date
+        Integer page_count
+        varchar language
+        Timestamp created_at
+        Timestamp updated_at
+        UUID user_id FK
+    }
+
+    reviews {
+        UUID uid PK
+        UUID book_id FK
+        UUID user_id FK
+        varchar review_text
+        Integer rating
+        Timestamp created_at
+    }
+
+    tag {
+        UUID uid PK
+        UUID book_id FK
+        varchar name
+        Timestamp created_at
+    }
+
+    users ||--o{ books : "owns"
+    users ||--o{ reviews : "writes"
+    books ||--o{ reviews : "has"
+    books ||--o{ tag : "tagged"
+```
 ### Tech stack
 
 - FastAPI
