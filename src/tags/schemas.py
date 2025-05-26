@@ -7,7 +7,7 @@ class TagModel (BaseModel):
     name: str
     created_at: datetime
 
-class TageCreateModel (BaseModel):
+class TagCreateModel (BaseModel):
     name: str
 
 class TagAddModel (BaseModel):

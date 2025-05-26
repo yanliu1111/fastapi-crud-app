@@ -1,6 +1,6 @@
 from src.db.models import Tag
 from src.books.service import BookService
-from src.tags.schemas import TagAddModel, TageCreateModel
+from src.tags.schemas import TagAddModel, TagCreateModel
 
 from fastapi import status
 from fastapi.exceptions import HTTPException
@@ -39,4 +39,39 @@ class TagService:
         await session.refresh(book)
         return book
     
-    async def 
+    async def add_tag(self, tag_data: TagCreateModel, session: AsyncSession):
+        statement = select(Tag).where(Tag.name == tag_data.name)
+        result = await session.exec(statement)
+        tag = result.first()
+        if tag:
+            raise TagAlreadyExists(tag_data.name)
+        new_tag = Tag(name=tag_data.name)
+
+        session.add(new_tag)
+        await session.commit()
+        await session.refresh(new_tag)
+        return new_tag
+    
+    async def get_tag_by_uid(self, tag_uid: str, session: AsyncSession):
+        statement = select(Tag).where(Tag.uid == tag_uid)
+        result = await session.exec(statement)
+        tag = result.first() # different from .one_or_none() to raise an error if not found
+
+    async def update_tag(self, tag_uid, tag_update_data: TagCreateModel, session: AsyncSession):
+        tag = await self.get_tag_by_uid(tag_uid, session) # AsyncSession method means it will raise an error if not found
+        if not tag:
+            raise TagNotFound(tag_uid)
+        update_data_dict = tag_update_data.model_dump() # model_dump() converts the Pydantic model to a dictionary
+        for key, value in update_data_dict.items():
+            setattr(tag, key, value)
+            await session.commit()
+            await session.refresh(tag)
+        return tag
+    
+    async def delete_tag(self, tag_uid: str, session: AsyncSession):
+        tag = await self.get_tag_by_uid(tag_uid, session)
+        if not tag:
+            raise TagNotFound(tag_uid)
+        await session.delete(tag)
+        await session.commit()
+        return {"message": "Tag deleted successfully"}
