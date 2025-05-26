@@ -61,7 +61,7 @@ async def add_tags_to_book(
     response_model=TagModel,
     status_code=status.HTTP_200_OK,
     dependencies=[user_role_checker],
-) -> TagModel:
+)
 async def update_tag(
     tag_uid: str,
     tag_update_data: TagCreateModel,
