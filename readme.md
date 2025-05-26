@@ -4,7 +4,7 @@
 
 Start by setting up a FastAPI project and running a simple web server. Then, progress to more advanced topics, including building REST APIs, handling path and query parameters, and working with databases using SQLModel. Additionally, explore managing settings with Pydantic, organizing your API with routers, and implementing asynchronous SQLModel connections.
 
-### Flowchart of the application
+### ERD of the project
 ```mermaid
 erDiagram
     users {
@@ -96,6 +96,7 @@ JWT_ALGORITHM=HS256
 ```
 6. Run database migrations to initialize the database schema:
 ```bash
+alembic revision --autogenerate -m"add tag table"
 alembic upgrade head
 ```
 7. Run the FastAPI application:
