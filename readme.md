@@ -141,3 +141,4 @@ class Settings(BaseSettings):
         "crud on their own account",
     ]
 11. **lazy loading** - available via lazy = 'select' or the `lazyload()` option, this is the form of loading that emits a SELECT statement at attribute access time to lazily load a related reference on a signle object at a time. Lazy loading is detailed at lazy loading. 
+12. 
