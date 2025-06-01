@@ -4,6 +4,9 @@ from src.config import Config
 import jwt
 import uuid
 import logging
+from jwt import ExpiredSignatureError, InvalidTokenError
+from fastapi import HTTPException
+
 passwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 ACCESS_TOKEN_EXPIRE = 3600  # 1 hour
 
@@ -36,13 +39,15 @@ def decode_token(token: str) -> dict:
         token_data = jwt.decode(
             jwt=token, key=Config.JWT_SECRET, algorithms=[Config.JWT_ALGORITHM]
         )
-        logging.info(f"Token Expiry (exp): {token_data['exp']} (Unix Timestamp)")
-        logging.info(f"Current UTC Time: {int(datetime.now(timezone.utc).timestamp())} (Unix Timestamp)")
         return token_data
-
-    except jwt.PyJWTError as e:
-        logging.exception(e)
-        return None
+    except ExpiredSignatureError:
+        raise HTTPException(
+            status_code=401, detail="Token has expired. Please log in again."
+        )
+    except InvalidTokenError:
+        raise HTTPException(
+            status_code=401, detail="Invalid token. Please provide a valid token."
+        )
 
 
 # def decode_token(token:str) -> dict:
