@@ -1,6 +1,10 @@
 from fastapi import FastAPI
 from fastapi.requests import Request
 import time
+import logging
+
+logger = logging.getLogger('uvicorn.access')
+logger.disabled = True  # Disable Uvicorn's default access log
 
 def register_middleware(app: FastAPI):
     # create login middleware
@@ -8,8 +12,9 @@ def register_middleware(app: FastAPI):
     @app.middleware("http")
     async def custom_loggin(request: Request, call_next):
         start_time = time.time()
-        print('before', start_time)
+        
         response = await call_next(request)
         process_time = time.time() - start_time
-        print(f"Request: {request.method} {request.url} completed in {process_time:.4f} seconds")
+        message = f"Request: {request.method} {request.url.path} - complete after{process_time}s"
+        print (message)
         return response
