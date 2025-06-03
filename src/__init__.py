@@ -10,7 +10,6 @@ from src.tags.routes import tags_router
 from .error import register_all_errors
 from .middleware import register_middleware
 
-
 @asynccontextmanager
 async def life_span(app: FastAPI):
     print (f"Starting the app...")
