@@ -2,8 +2,6 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 from dotenv import load_dotenv
 import asyncpg
 import os
-import src.config as Config
-
 
 load_dotenv()
 
@@ -15,16 +13,23 @@ class Settings(BaseSettings):
     REDIS_HOST: str = os.getenv("REDIS_HOST", "localhost")
     REDIS_PORT: int = int(os.getenv("REDIS_PORT", 6379))
     REDIS_PASSWORD: str = os.getenv("REDIS_PASSWORD", "")
-    MAIL_USERNAME=Config.MAIL_USERNAME,
-    MAIL_PASSWORD=Config.MAIL_PASSWORD,
-    MAIL_FROM=Config.MAIL_FROM,
-    MAIL_PORT=587,
-    MAIL_SERVER=Config.MAIL_SERVER,
-    MAIL_FROM_NAME=Config.MAIL_FROM_NAME,
-    MAIL_STARTTLS=True,
-    MAIL_SSL_TLS=False,
-    USE_CREDENTIALS=True,
-    VALIDATE_CERTS=True,
+
+    MAIL_USERNAME: str
+    MAIL_PASSWORD: str
+    MAIL_FROM: str
+    MAIL_PORT: int
+    MAIL_SERVER: str
+    MAIL_FROM_NAME: str
+    MAIL_STARTTLS: bool = True
+    MAIL_SSL_TLS: bool = False
+    USE_CREDENTIALS: bool = True
+    VALIDATE_CERTS: bool = True
+
+    model_config = SettingsConfigDict(
+        env_file=".env",
+        extra="ignore",
+        env_nested_delimiter="__"
+    )
 
 settings = Settings()
 # test the Neon connection
