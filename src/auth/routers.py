@@ -191,7 +191,7 @@ async def pass_reset_request(email_data: PasswordResetRequestModel, session: Asy
         status_code=status.HTTP_200_OK
     )
 
-@auth_router.get('/password-reset-confirm/{token}')
+@auth_router.post('/password-reset-confirm/{token}')
 async def reset_account_password(token: str, password: PasswordResetConfirmModel, session: AsyncSession = Depends(get_session)):
 
     new_password = password.new_password
@@ -210,7 +210,7 @@ async def reset_account_password(token: str, password: PasswordResetConfirmModel
         if not user:
             raise UserNotFound()
         password_hash = generate_password_hash(new_password)
-        await user_service.update_user(user, {'password': password_hash}, session)
+        await user_service.update_user(user, {'password_hash': password_hash}, session)
         return JSONResponse(
             content={
                 "message": "Password Reset successfully.",
