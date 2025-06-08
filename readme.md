@@ -156,4 +156,9 @@ class Settings(BaseSettings):
         "crud on their own account",
     ]
 11. **lazy loading** - available via lazy = 'select' or the `lazyload()` option, this is the form of loading that emits a SELECT statement at attribute access time to lazily load a related reference on a signle object at a time. Lazy loading is detailed at lazy loading. 
-12. 
+12. How Celery works with FastAPI
+Celery is an asynchronous task queue/job queue that is based on distributed message passing. It is used to execute tasks in the background, allowing for the execution of long-running operations without blocking the main application thread. Celery supports multiple message brokers, such as RabbitMQ and Redis, and can be used with FastAPI to handle background tasks efficiently.
+Broker = Task Queue <br>
+Celery Worker = Task Processor <br>
+Results Backend = Task Result Storage <br>
+![Celery](03-celery.excalidraw.png)
