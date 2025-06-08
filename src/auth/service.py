@@ -24,3 +24,10 @@ class UserService:
         await session.commit()
         await session.refresh(new_user)
         return new_user
+    
+    async def update_user(self, user: User, user_data:dict, session: AsyncSession):
+        # Update user attributes based on the provided user_data dictionary
+        for k, v in user_data.items():
+            setattr(user, k, v)
+        await session.commit()
+        return user

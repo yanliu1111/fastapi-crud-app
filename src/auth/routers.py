@@ -4,13 +4,15 @@ from .service import UserService
 from src.db.main import get_session
 from sqlmodel.ext.asyncio.session import AsyncSession
 from fastapi import HTTPException, status
-from .utils import create_access_token, decode_token, verify_password
+from .utils import create_access_token, verify_password, create_url_safe_token, decode_url_safe_token
 from datetime import timedelta, datetime
 from fastapi.responses import JSONResponse
 from .dependencies import RefreshTokenBearer, AccessTokenBearer, get_current_user, RoleChecker
 from src.db.redis import add_jti_to_blocklist
 from src.error import UserAlreadyExists, UserNotFound, InvalidCredentials, InvalidToken
 from src.mail import mail, create_message
+from src.config import Config
+from src.db.main import get_session
 
 
 auth_router = APIRouter()
@@ -34,7 +36,7 @@ async def send_mail(emails:EmailModel):
 
 @auth_router.post(
         "/signup",
-        response_model=UserModel,
+        # response_model=UserModel,
         status_code=status.HTTP_201_CREATED,)
 async def create_user_account(
     user_data: UserCreateModel,
@@ -47,8 +49,57 @@ async def create_user_account(
         raise UserAlreadyExists()
     
     new_user = await user_service.create_user(user_data, session)
+    token = create_url_safe_token({
+        "email": email,
+    })
+    link = f"http://{Config.DOMAIN}/api/v1/auth/verify/{token}" 
+    html_message = f"""
+    <h1>Welcome to the app, {new_user.email}!</h1>
+    <p>Please click this <a href="{link}">Link</a> to verify your email.</p>
+    <p>Thank you for joining us!</p>
+    """
+    message = create_message(
+        recipients=[email],
+        subject="Verify your email",
+        body=html_message,
+    )
+    await mail.send_message(message)
+    return {
+        "message": "User created successfully. Please check your email to verify your account.",
+        "user": {
+            "email": new_user.email,
+            "uid": str(new_user.uid),
+        }
+    }
+
+@auth_router.get('/verify/{token}')
+async def verify_user_account(token: str, session: AsyncSession = Depends(get_session)):
+
+    token_data = decode_url_safe_token(token)
+    email = token_data.get('email')
     
-    return new_user
+    if email:
+        user = await user_service.get_user_by_email(email, session)
+        if not user:
+            raise UserNotFound()
+        await user_service.update_user(user, {'is_verified': True}, session)
+        return JSONResponse(
+            content={
+                "message": "Email verified successfully.",
+                "user": {
+                    "email": user.email,
+                    "uid": str(user.uid),
+                }
+            },
+            status_code=status.HTTP_200_OK
+        )
+    return JSONResponse(
+        content={
+            "message": "Invalid or expired token.",
+        },
+        status_code=status.HTTP_400_BAD_REQUEST
+    )
+
 
 @auth_router.post('/login')
 async def login_users(login_data: UserLoginModel, session: AsyncSession = Depends(get_session)):

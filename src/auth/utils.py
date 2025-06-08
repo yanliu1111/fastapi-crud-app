@@ -6,6 +6,7 @@ import uuid
 import logging
 from jwt import ExpiredSignatureError, InvalidTokenError
 from fastapi import HTTPException
+from itsdangerous import URLSafeSerializer
 
 passwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 ACCESS_TOKEN_EXPIRE = 3600  # 1 hour
@@ -61,3 +62,18 @@ def decode_token(token: str) -> dict:
 #     except jwt.PyJWTError as e:
 #         logging.error(f"JWT Error: {e}")
 #         return None
+
+serializer = URLSafeSerializer(Config.JWT_SECRET, salt="EMAIL-VERIFICATION")
+
+def create_url_safe_token(data: dict):
+    token = serializer.dumps(data)
+    return token
+
+def decode_url_safe_token(token: str) -> dict:
+    
+    try:
+        data = serializer.loads(token)
+        return data
+    except Exception as e:
+        logging.error(f"Error decoding URL safe token: {e}")
+        raise HTTPException(status_code=400, detail="Invalid token")
