@@ -10,10 +10,9 @@ from fastapi.responses import JSONResponse
 from .dependencies import RefreshTokenBearer, AccessTokenBearer, get_current_user, RoleChecker
 from src.db.redis import add_jti_to_blocklist
 from src.error import UserAlreadyExists, UserNotFound, InvalidCredentials, InvalidToken
-from src.mail import mail, create_message
 from src.config import Config
 from src.db.main import get_session
-
+from src.celery_tasks import send_email
 
 auth_router = APIRouter()
 user_service = UserService()
@@ -25,12 +24,11 @@ REFRESH_TOKEN_EXPIRE = 2
 async def send_mail(emails:EmailModel):
     emails = emails.addresses
     html = "<h1>Welcome to the app<h1>"
-    message = create_message(
+    send_email.delay(
         recipients=emails,
         subject="Welcome to the app",
-        body=html
+        html_message=html,
     )
-    await mail.send_message(message)
     return {"message": "Email sent successfully", "emails": emails}
 
 
@@ -54,17 +52,26 @@ async def create_user_account(
         "email": email,
     })
     link = f"http://{Config.DOMAIN}/api/v1/auth/verify/{token}" 
-    html_message = f"""
+    html = f"""
     <h1>Welcome to the app, {new_user.email}!</h1>
     <p>Please click this <a href="{link}">Link</a> to verify your email.</p>
     <p>Thank you for joining us!</p>
     """
-    message = create_message(
-        recipients=[email],
-        subject="Verify your email",
-        body=html_message,
+    # message = create_message(
+    #     recipients=[email],
+    #     subject="Verify your email",
+    #     body=html_message,
+    # )
+    # bg_tasks.add_task(mail.send_message, message)
+
+    emails = [email]
+    subject = "Verify your email"
+    
+    send_email.delay(
+        emails,
+        subject,
+        html,
     )
-    bg_tasks.add_task(mail.send_message, message)
     return {
         "message": "User created successfully. Please check your email to verify your account.",
         "user": {

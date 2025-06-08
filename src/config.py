@@ -10,9 +10,11 @@ class Settings(BaseSettings):
     DATABASE_URL: str
     JWT_SECRET: str
     JWT_ALGORITHM: str
-    REDIS_HOST: str = os.getenv("REDIS_HOST", "localhost")
-    REDIS_PORT: int = int(os.getenv("REDIS_PORT", 6379))
-    REDIS_PASSWORD: str = os.getenv("REDIS_PASSWORD", "")
+    REDIS_HOST: str = os.getenv("REDIS_HOST")
+    REDIS_PORT: int = int(os.getenv("REDIS_PORT"))
+    REDIS_PASSWORD: str = os.getenv("REDIS_PASSWORD")
+    REDIS_URL: str = f"redis://:{os.getenv('REDIS_PASSWORD')}@{os.getenv('REDIS_HOST')}:{os.getenv('REDIS_PORT')}/0"
+
 
     MAIL_USERNAME: str
     MAIL_PASSWORD: str
@@ -46,3 +48,7 @@ async def connect_to_neon():
         print("Error connecting to PostgreSQL:", e)
 
 Config = settings
+
+broken_url = Config.REDIS_URL
+result_backend =  Config.REDIS_URL
+broker_connection_retry_on_startup = True

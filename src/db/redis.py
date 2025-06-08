@@ -2,10 +2,14 @@ import redis.asyncio as redis
 from src.config import Config
 JTI_EXPIRY = 3600  # 1 hour
 
-token_blocklist = redis.Redis(
-    host=Config.REDIS_HOST,
-    port=Config.REDIS_PORT,
-    password=Config.REDIS_PASSWORD,  # Add the password for authentication
+# token_blocklist = redis.Redis(
+#     host=Config.REDIS_HOST,
+#     port=Config.REDIS_PORT,
+#     password=Config.REDIS_PASSWORD,  # Add the password for authentication
+#     decode_responses=True,
+# )
+token_blocklist = redis.from_url(
+    Config.REDIS_URL,
     decode_responses=True,
 )
 # jti means JWT ID
