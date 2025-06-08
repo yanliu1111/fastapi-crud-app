@@ -54,7 +54,7 @@ erDiagram
     books ||--o{ reviews : "has"
     books ||--o{ tag : "tagged"
 ```
-### Tech stack
+### Tech stack & workflow
 
 - FastAPI
 - Postgresql by [NEON](https://neon.tech/docs/guides/python) COULD BD (Set your Postgresql db in cloud)
@@ -66,7 +66,22 @@ erDiagram
 - pydantic for data validation and settings management
 - pyjwt for JWT token management
 - Connect cloud Redis with FastAPI, set up Redis in cloud
-- 
+- Error Handling
+- Create custom API Exceptions
+- Creating a custom logging middleware
+- Adding CORS Middleware
+- Setting Up FastAPI-Mail
+- User account verification
+- Password Resets
+- FastAPI Background Tasks
+- Background Tasks with Celery and Redis
+- Celery Monitoring With Flower
+- API Documentation with SwaggerUI and Redoc
+- API Testing
+- Unit testing with Unittest Mock and Pytest
+- Document-driven Testing with Schemathesis
+- Deployment on Render.com
+
 ### Project setup
 1. Clone the project repository:
 ```bash
