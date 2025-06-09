@@ -1,6 +1,4 @@
-# what __init__.py does is to make the code in the src folder a package
-
-from fastapi import FastAPI, Depends, status
+from fastapi import FastAPI
 from src.books.routes import book_router
 from contextlib import asynccontextmanager
 from src.db.main import init_db
