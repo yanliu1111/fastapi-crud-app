@@ -3,6 +3,9 @@ from src import app
 from unittest.mock import Mock
 import pytest
 from fastapi.testclient import TestClient
+import uuid
+from datetime import datetime
+from src.db.models import Book
 from src.auth.dependencies import RoleChecker, AccessTokenBearer, RefreshTokenBearer
 
 mock_session = Mock()
@@ -25,10 +28,10 @@ app.dependency_overrides[RefreshTokenBearer] = Mock()
 def fake_session():
     """Fixture to provide a mock session for testing."""
     return mock_session
-@pytest.fixture(scope="session")
-def mock_user_service():
-    """Fixture to provide a mock user service for testing."""
+@pytest.fixture
+def fake_user_service():
     return mock_user_service
+
 @pytest.fixture(scope="session")
 def fake_book_service():
     """Fixture to provide a mock user service for testing."""
@@ -38,3 +41,15 @@ def test_client():
     """Fixture to provide a test client for the FastAPI app."""
     with TestClient(app) as client:
         yield client
+@pytest.fixture
+def test_book():
+    return Book(
+        uid=uuid.uuid4(),
+        user_uid=uuid.uuid4(),
+        title="sample title",
+        description="sample description",
+        page_count=200,
+        language="English",
+        published_date=datetime.now(),
+        update_at=datetime.now()
+    )
