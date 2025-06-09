@@ -1,5 +1,8 @@
 # FastAPI with CRUD operations
 
+>📌**Learning resource** from [FASTAPI BEYOND CRUD FULL COURSE](https://www.youtube.com/watch?v=TO4aQ3ghFOc&t=30551s&ab_channel=SsaliJonathan), good FASTAPI advanced course👍. adding cloud Neon Postgresql, Redis setting and connect features methods which is different from the course.
+
+
 ### Project purpose
 
 Start by setting up a FastAPI project and running a simple web server. Then, progress to more advanced topics, including building REST APIs, handling path and query parameters, and working with databases using SQLModel. Additionally, explore managing settings with Pydantic, organizing your API with routers, and implementing asynchronous SQLModel connections.
@@ -79,7 +82,9 @@ erDiagram
 - API Documentation with SwaggerUI and Redoc `http://localhost:8000/docs`
 - API Testing
 - Unit testing with Unittest Mock and Pytest
-- Document-driven Testing with Schemathesis
+- Document-driven Testing with Schemathesis 
+  - `pip install schemathesis`
+  - open `localhost:8000/api/v1/openapi.json`
 - Deployment on Render.com
 
 ### Project setup
