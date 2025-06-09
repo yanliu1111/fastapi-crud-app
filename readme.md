@@ -1,6 +1,6 @@
 # FastAPI with CRUD operations
 
->📌**Learning resource** from [FASTAPI BEYOND CRUD FULL COURSE](https://www.youtube.com/watch?v=TO4aQ3ghFOc&t=30551s&ab_channel=SsaliJonathan), good FASTAPI advanced course👍. adding cloud Neon Postgresql, Redis setting and connect features methods which is different from the course.
+>📌**Learning Resource:** Based on the [FASTAPI BEYOND CRUD FULL COURSE](https://www.youtube.com/watch?v=TO4aQ3ghFOc&t=30551s&ab_channel=SsaliJonathan) — an excellent advanced FastAPI tutorial 👍. I extended the course by adding cloud-based Neon PostgreSQL, Redis configuration, and connection features not covered in the original content.
 
 
 ### Project purpose
