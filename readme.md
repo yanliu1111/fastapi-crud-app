@@ -76,7 +76,7 @@ erDiagram
 - FastAPI Background Tasks
 - Background Tasks with Celery and Redis
 - Celery Monitoring With Flower
-- API Documentation with SwaggerUI and Redoc
+- API Documentation with SwaggerUI and Redoc `http://localhost:8000/docs`
 - API Testing
 - Unit testing with Unittest Mock and Pytest
 - Document-driven Testing with Schemathesis
